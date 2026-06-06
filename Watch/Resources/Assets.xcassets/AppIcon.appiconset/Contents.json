@@ -1,0 +1,334 @@
+{
+  "images": [
+    {
+      "filename": "icon-24@2x.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "24x24"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-24@2x-dark.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "24x24"
+    },
+    {
+      "filename": "icon-27.5@2x.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "27.5x27.5"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-27.5@2x-dark.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "27.5x27.5"
+    },
+    {
+      "filename": "icon-29@2x.png",
+      "idiom": "watch",
+      "role": "companionSettings",
+      "scale": "2x",
+      "size": "29x29"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-29@2x-dark.png",
+      "idiom": "watch",
+      "role": "companionSettings",
+      "scale": "2x",
+      "size": "29x29"
+    },
+    {
+      "filename": "icon-33@2x.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "33x33"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-33@2x-dark.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "33x33"
+    },
+    {
+      "filename": "icon-38@2x.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "38x38"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-38@2x-dark.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "38x38"
+    },
+    {
+      "filename": "icon-40@2x.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "40x40"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-40@2x-dark.png",
+      "idiom": "watch",
+      "role": "notificationCenter",
+      "scale": "2x",
+      "size": "40x40"
+    },
+    {
+      "filename": "icon-44@2x.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "44x44"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-44@2x-dark.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "44x44"
+    },
+    {
+      "filename": "icon-46@2x.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "46x46"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-46@2x-dark.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "46x46"
+    },
+    {
+      "filename": "icon-50@2x.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "50x50"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-50@2x-dark.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "50x50"
+    },
+    {
+      "filename": "icon-51@2x.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "51x51"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-51@2x-dark.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "51x51"
+    },
+    {
+      "filename": "icon-54@2x.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "54x54"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-54@2x-dark.png",
+      "idiom": "watch",
+      "role": "appLauncher",
+      "scale": "2x",
+      "size": "54x54"
+    },
+    {
+      "filename": "icon-88@2x.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "88x88"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-88@2x-dark.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "88x88"
+    },
+    {
+      "filename": "icon-92@2x.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "92x92"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-92@2x-dark.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "92x92"
+    },
+    {
+      "filename": "icon-100@2x.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "100x100"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-100@2x-dark.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "100x100"
+    },
+    {
+      "filename": "icon-102@2x.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "102x102"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-102@2x-dark.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "102x102"
+    },
+    {
+      "filename": "icon-108@2x.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "108x108"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "icon-108@2x-dark.png",
+      "idiom": "watch",
+      "role": "quickLook",
+      "scale": "2x",
+      "size": "108x108"
+    },
+    {
+      "filename": "icon-1024.png",
+      "idiom": "ios-marketing",
+      "scale": "1x",
+      "size": "1024x1024"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

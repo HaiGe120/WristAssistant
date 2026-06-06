@@ -1,0 +1,18 @@
+# Build outputs
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+
+# Xcode generated
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# SPM
+.swiftpm/
+Package.resolved
+
+# Logs
+*.log

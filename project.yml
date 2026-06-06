@@ -1,0 +1,164 @@
+name: WristAssistant
+options:
+  bundleIdPrefix: com.wristassistant
+  deploymentTarget:
+    iOS: "26.0"
+    watchOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+  developmentLanguage: en
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    GENERATE_INFOPLIST_FILE: NO
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: "1.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+    WATCHOS_DEPLOYMENT_TARGET: "26.0"
+    SUPPORTED_PLATFORMS: "iphoneos iphonesimulator watchos watchsimulator"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    SUPPORTS_MACCATALYST: NO
+    SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+targets:
+  WristAssistant:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared
+    resources:
+      - path: App/Resources
+        optional: true
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Wrist Assistant
+        UIDeviceFamily:
+          - 1
+        CFBundleURLTypes:
+          - CFBundleURLName: com.wristassistant.app
+            CFBundleURLSchemes:
+              - wristassistant
+        UILaunchScreen:
+          UIColorName: ""
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - target: WristAssistantWatch
+        embed: true
+        codeSign: true
+    scheme:
+      testTargets: []
+      gatherCoverageData: false
+
+  WristAssistantWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: Watch
+      - path: Shared
+    resources:
+      - path: Watch/Resources
+        optional: true
+    info:
+      path: Watch/Info.plist
+      properties:
+        CFBundleDisplayName: Wrist Assistant
+        UIDeviceFamily:
+          - 4
+        WKApplication: true
+        WKWatchOnly: false
+        WKCompanionAppBundleIdentifier: com.wristassistant.app
+        WKRunsIndependentlyOfCompanionApp: false
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app.watchkitapp
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "4"
+        SDKROOT: watchos
+    dependencies:
+      - target: WristAssistantWatchWidgets
+        embed: true
+        codeSign: true
+
+  WristAssistantWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    sources:
+      - path: WatchWidgets/Widgets
+    resources:
+      - path: WatchWidgets/PrivacyInfo.xcprivacy
+        optional: true
+    info:
+      path: WatchWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Wrist Assistant Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app.watchkitapp.widgets
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "4"
+        SDKROOT: watchos
+        SUPPORTED_PLATFORMS: "watchos watchsimulator"
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+        SKIP_INSTALL: NO
+        CODE_SIGN_STYLE: Automatic
+
+schemes:
+  WristAssistant:
+    build:
+      targets:
+        WristAssistant: all
+        WristAssistantWatch: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+  WristAssistantWatch:
+    build:
+      targets:
+        WristAssistantWatch: all
+        WristAssistantWatchWidgets: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
