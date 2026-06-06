@@ -16,3 +16,12 @@ Package.resolved
 
 # Logs
 *.log
+
+# Signing assets — never commit private keys, certs, or profiles
+*.p12
+*.p8
+*.p7b
+*.cer
+*.mobileprovision
+*.provisionprofile
+export.p12
