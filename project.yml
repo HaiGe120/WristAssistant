@@ -54,7 +54,7 @@ targets:
     info:
       path: App/Info.plist
       properties:
-        CFBundleDisplayName: WristChat
+        CFBundleDisplayName: WristChatUI
         UIDeviceFamily:
           - 1
         CFBundleURLTypes:
@@ -75,7 +75,7 @@ targets:
         NSUbiquitousContainers:
           iCloud.com.wristassistant.app:
             NSUbiquitousContainerIsDocumentScopePublic: true
-            NSUbiquitousContainerName: WristChat
+            NSUbiquitousContainerName: WristChatUI
             NSUbiquitousContainerSupportedFolderLevels: Any
     dependencies:
       - target: WristAssistantWatch
@@ -114,7 +114,7 @@ targets:
     info:
       path: Watch/Info.plist
       properties:
-        CFBundleDisplayName: WristChat
+        CFBundleDisplayName: WristChatUI
         UIDeviceFamily:
           - 4
         WKApplication: true
@@ -127,7 +127,7 @@ targets:
         NSUbiquitousContainers:
           iCloud.com.wristassistant.app:
             NSUbiquitousContainerIsDocumentScopePublic: true
-            NSUbiquitousContainerName: WristChat
+            NSUbiquitousContainerName: WristChatUI
             NSUbiquitousContainerSupportedFolderLevels: Any
     dependencies:
       - target: WristAssistantWatchWidgets
@@ -145,7 +145,7 @@ targets:
     info:
       path: WatchWidgets/Info.plist
       properties:
-        CFBundleDisplayName: WristChat Widgets
+        CFBundleDisplayName: WristChatUI Widgets
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
