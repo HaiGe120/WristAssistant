@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>method</key>
-	<string>app-store</string>
+	<string>app-store-connect</string>
 	<key>destination</key>
 	<string>export</string>
 	<key>signingStyle</key>
@@ -15,7 +15,7 @@
 	<key>manageAppVersionAndBuildNumber</key>
 	<false/>
 	<key>teamID</key>
-	<string>1524412550</string>
+	<string>W6DM8CHQA7</string>
 	<key>compileBitcode</key>
 	<false/>
 	<key>thinning</key>
