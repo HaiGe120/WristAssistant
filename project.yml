@@ -14,7 +14,7 @@ settings:
   base:
     SWIFT_VERSION: "5.10"
     SWIFT_STRICT_CONCURRENCY: minimal
-    DEVELOPMENT_TEAM: ""
+    DEVELOPMENT_TEAM: "1524412550"
     CODE_SIGN_STYLE: Automatic
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     GENERATE_INFOPLIST_FILE: NO
@@ -36,13 +36,15 @@ targets:
     sources:
       - path: App
       - path: Shared
+    entitlements:
+      path: App/WristAssistant.entitlements
     resources:
       - path: App/Resources
         optional: true
     info:
       path: App/Info.plist
       properties:
-        CFBundleDisplayName: Wrist Assistant
+        CFBundleDisplayName: WristChat
         UIDeviceFamily:
           - 1
         CFBundleURLTypes:
@@ -78,13 +80,15 @@ targets:
     sources:
       - path: Watch
       - path: Shared
+    entitlements:
+      path: Watch/WristAssistantWatch.entitlements
     resources:
       - path: Watch/Resources
         optional: true
     info:
       path: Watch/Info.plist
       properties:
-        CFBundleDisplayName: Wrist Assistant
+        CFBundleDisplayName: WristChat
         UIDeviceFamily:
           - 4
         WKApplication: true
@@ -116,7 +120,7 @@ targets:
     info:
       path: WatchWidgets/Info.plist
       properties:
-        CFBundleDisplayName: Wrist Assistant Widgets
+        CFBundleDisplayName: WristChat Widgets
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

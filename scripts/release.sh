@@ -57,9 +57,6 @@ xcodebuild \
   -destination "generic/platform=iOS" \
   -derivedDataPath "${DERIVED}" \
   -archivePath "${ARCHIVE_PATH}" \
-  CODE_SIGN_IDENTITY="" \
-  CODE_SIGNING_REQUIRED=YES \
-  CODE_SIGNING_ALLOWED=YES \
   archive 2>&1 | tail -40
 
 log "xcodebuild -exportArchive -> ${IPA_PATH}"
