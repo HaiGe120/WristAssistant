@@ -58,6 +58,7 @@ xcodebuild \
   -derivedDataPath "${DERIVED}" \
   -archivePath "${ARCHIVE_PATH}" \
   -allowProvisioningUpdates \
+  OTHER_CODE_SIGN_FLAGS="--strip-disallowed-xattrs" \
   archive 2>&1 | tail -40
 
 log "xcodebuild -exportArchive -> ${IPA_PATH}"
