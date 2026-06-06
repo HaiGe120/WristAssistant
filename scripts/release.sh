@@ -58,9 +58,6 @@ xcodebuild \
   -derivedDataPath "${DERIVED}" \
   -archivePath "${ARCHIVE_PATH}" \
   -allowProvisioningUpdates \
-  CODE_SIGN_IDENTITY="Apple Distribution" \
-  CODE_SIGN_IDENTITY[sdk=iphoneos*]="Apple Distribution" \
-  CODE_SIGN_IDENTITY[sdk=watchos*]="Apple Distribution" \
   OTHER_CODE_SIGN_FLAGS="--strip-disallowed-xattrs" \
   archive 2>&1 | tail -40
 
