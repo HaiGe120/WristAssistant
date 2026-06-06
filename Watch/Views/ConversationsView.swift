@@ -12,28 +12,20 @@ struct ConversationsView: View {
 
     @State private var presentingSettings = false
     @State private var isResyncing = false
-    /// Drives the "New chat" flow. When non-nil, the conversations
-    /// list pushes straight into ChatView for a freshly created
-    /// conversation (using the active endpoint) and then clears the
-    /// binding. The optional prompt is the user-typed seed text
-    /// (Siri intent, deep link, etc.) which becomes the conversation's
-    /// first message so the user lands in a chat with the keyboard
-    /// already populated.
-    @State private var pendingNewChat: PendingNewChat?
-    @State private var pendingSeedPrompt: String = ""
+    @State private var path: [ChatRoute] = []
 
-    struct PendingNewChat: Identifiable, Hashable {
-        let id: UUID  // = conversation id
+    struct ChatRoute: Hashable {
+        let conversationID: UUID
+        let focusComposer: Bool
     }
 
     var body: some View {
-        let _ =
-        NavigationStack {
+        NavigationStack(path: $path) {
             List {
                 if !conversations.isEmpty {
                     Section("Recent") {
                         ForEach(conversations.prefix(20)) { conversation in
-                            NavigationLink(value: conversation.id) {
+                            NavigationLink(value: ChatRoute(conversationID: conversation.id, focusComposer: false)) {
                                 WatchConversationRow(conversation: conversation)
                             }
                         }
@@ -79,22 +71,14 @@ struct ConversationsView: View {
             #endif
             .refreshable { await resyncWithPhone() }
             .navigationTitle("Chats")
-            .navigationDestination(for: UUID.self) { id in
-                if let conversation = conversations.first(where: { $0.id == id }) {
-                    ChatView(conversation: conversation)
+            .navigationDestination(for: ChatRoute.self) { route in
+                if let conversation = conversations.first(where: { $0.id == route.conversationID }) {
+                    ChatView(
+                        conversation: conversation,
+                        focusComposerOnAppear: route.focusComposer
+                    )
                 } else {
-                    Text("Not found")
-                }
-            }
-            .navigationDestination(item: $pendingNewChat) { pending in
-                // Re-fetch the live conversation from the model context
-                // so ChatView sees the freshly inserted row instead of
-                // a stale snapshot. Using the pending.id avoids any
-                // ordering hazard between insert and navigate.
-                if let conversation = conversations.first(where: { $0.id == pending.id }) {
-                    ChatView(conversation: conversation)
-                } else {
-                    Text("Not found")
+                    ProgressView()
                 }
             }
             .sheet(isPresented: $presentingSettings) {
@@ -187,11 +171,8 @@ struct ConversationsView: View {
         try? modelContext.save()
         // Mirror to the phone so the conversations list stays in sync.
         SyncCoordinator.shared.publishConversation(ConversationSnapshot(conv))
-        // Drive the navigation push. Using a fresh PendingNewChat
-        // means the .navigationDestination(item:) handler fires even
-        // when the same id was already on the stack.
-        convsLog.info("startNewChat: pendingNewChat=()")
-        pendingNewChat = PendingNewChat(id: conv.id)
+        convsLog.info("startNewChat: route append")
+        path.append(ChatRoute(conversationID: conv.id, focusComposer: true))
     }
 
     private func delete(at offsets: IndexSet) {
@@ -221,4 +202,3 @@ private struct WatchConversationRow: View {
         }
     }
 }
-

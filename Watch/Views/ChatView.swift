@@ -1,7 +1,6 @@
 //  ChatView.swift
-//  Watch chat view with a simple inline reply box at the bottom.
-//  Reverts the iMessage-style floating overlay, scroll sentinel, and
-//  focus-burst tricks — the basic shape the user had working before.
+//  Watch chat view with a Messages-style reply box at the bottom of
+//  the scroll content.
 
 import SwiftUI
 import SwiftData
@@ -13,6 +12,7 @@ struct ChatView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var endpoints: EndpointStore
     @Bindable var conversation: Conversation
+    let focusComposerOnAppear: Bool
 
     @StateObject private var engine = ChatEngine()
     @State private var draft: String = ""
@@ -23,6 +23,12 @@ struct ChatView: View {
     /// `Message` on stream completion.
     @State private var streamingContent: String = ""
     @State private var presentingEndpointPicker = false
+    @State private var focusComposerTrigger = 0
+
+    init(conversation: Conversation, focusComposerOnAppear: Bool = false) {
+        self.conversation = conversation
+        self.focusComposerOnAppear = focusComposerOnAppear
+    }
 
     private var endpoint: EndpointConfig? {
         endpoints.endpoints.first(where: { $0.id == conversation.endpointID })
@@ -33,16 +39,7 @@ struct ChatView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            messages
-            Divider()
-            ComposerView(
-                text: $draft,
-                isStreaming: engine.isStreaming,
-                canSend: canSend,
-                onSend: send
-            )
-        }
+        messages
         .navigationTitle(conversation.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -70,9 +67,9 @@ struct ChatView: View {
         }
     }
 
-    /// Scrollable list of messages. Plain ScrollView + LazyVStack — no
-    /// scroll sentinel, no auto-hide. Auto-scrolls to the newest
-    /// message on appear and whenever a new message is appended.
+    /// The composer is the final scroll item, matching Apple Watch
+    /// Messages: it is available at the end of the thread without
+    /// covering older context while the user scrolls back.
     private var messages: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -84,20 +81,43 @@ struct ChatView: View {
                         )
                         .id(message.id)
                     }
+
+                    ComposerView(
+                        text: $draft,
+                        isStreaming: engine.isStreaming,
+                        canSend: canSend,
+                        focusTrigger: focusComposerTrigger,
+                        onSend: send
+                    )
+                    .id(composerID)
                 }
                 .padding(.horizontal, 4)
                 .padding(.vertical, 4)
             }
             .onAppear {
-                if let last = conversation.sortedMessages.last {
-                    proxy.scrollTo(last.id, anchor: .bottom)
-                }
+                scrollToBottom(proxy, focus: focusComposerOnAppear)
             }
             .onChange(of: conversation.messages.count) { _, _ in
-                if let last = conversation.sortedMessages.last {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        proxy.scrollTo(last.id, anchor: .bottom)
-                    }
+                scrollToBottom(proxy, focus: false)
+            }
+            .onChange(of: engine.isStreaming) { _, isStreaming in
+                if isStreaming {
+                    scrollToBottom(proxy, focus: false)
+                }
+            }
+        }
+    }
+
+    private var composerID: String { "watch-chat-composer" }
+
+    private func scrollToBottom(_ proxy: ScrollViewProxy, focus: Bool) {
+        Task {
+            await MainActor.run {
+                withAnimation(.easeOut(duration: 0.2)) {
+                    proxy.scrollTo(composerID, anchor: .bottom)
+                }
+                if focus {
+                    focusComposerTrigger += 1
                 }
             }
         }
