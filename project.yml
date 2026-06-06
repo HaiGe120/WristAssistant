@@ -16,9 +16,6 @@ settings:
     SWIFT_STRICT_CONCURRENCY: minimal
     DEVELOPMENT_TEAM: "W6DM8CHQA7"
     CODE_SIGN_STYLE: Automatic
-    CODE_SIGN_IDENTITY: "Apple Distribution"
-    "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-    "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     GENERATE_INFOPLIST_FILE: NO
     CURRENT_PROJECT_VERSION: 1
@@ -74,6 +71,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
         TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_IDENTITY: "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
     dependencies:
       - target: WristAssistantWatch
         embed: true
@@ -119,6 +119,9 @@ targets:
         SUPPORTS_MACCATALYST: NO
         TARGETED_DEVICE_FAMILY: "4"
         SDKROOT: watchos
+        CODE_SIGN_IDENTITY: "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
         SUPPORTED_PLATFORMS: "watchos watchsimulator"
     dependencies:
       - target: WristAssistantWatchWidgets
@@ -149,6 +152,9 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
         SKIP_INSTALL: NO
         CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
+        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
 
 schemes:
   WristAssistant:
