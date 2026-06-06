@@ -47,7 +47,7 @@ targets:
           CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Apple Distribution"
           "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat iOS AppStore"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat iOS AppStore 1.0"
     resources:
       - path: App/Resources
         optional: true
@@ -107,7 +107,7 @@ targets:
           CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Apple Distribution"
           "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS AppStore"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS AppStore 1.0"
     resources:
       - path: Watch/Resources
         optional: true
@@ -163,7 +163,7 @@ targets:
           CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Apple Distribution"
           "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS Widgets AppStore"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS Widgets AppStore 1.0"
 
 schemes:
   WristAssistant:
