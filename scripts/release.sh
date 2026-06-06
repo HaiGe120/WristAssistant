@@ -57,6 +57,7 @@ xcodebuild \
   -destination "generic/platform=iOS" \
   -derivedDataPath "${DERIVED}" \
   -archivePath "${ARCHIVE_PATH}" \
+  -allowProvisioningUpdates \
   archive 2>&1 | tail -40
 
 log "xcodebuild -exportArchive -> ${IPA_PATH}"
