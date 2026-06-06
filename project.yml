@@ -38,6 +38,16 @@ targets:
       - path: Shared
     entitlements:
       path: App/WristAssistant.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
+        TARGETED_DEVICE_FAMILY: "1"
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat iOS AppStore"
     resources:
       - path: App/Resources
         optional: true
@@ -67,13 +77,6 @@ targets:
             NSUbiquitousContainerIsDocumentScopePublic: true
             NSUbiquitousContainerName: WristChat
             NSUbiquitousContainerSupportedFolderLevels: Any
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
-        TARGETED_DEVICE_FAMILY: "1"
-        CODE_SIGN_IDENTITY: "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
     dependencies:
       - target: WristAssistantWatch
         embed: true
@@ -92,6 +95,19 @@ targets:
       - path: Shared
     entitlements:
       path: Watch/WristAssistantWatch.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app.watchkitapp
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "4"
+        SDKROOT: watchos
+        CODE_SIGN_STYLE: Automatic
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS AppStore"
     resources:
       - path: Watch/Resources
         optional: true
@@ -113,16 +129,6 @@ targets:
             NSUbiquitousContainerIsDocumentScopePublic: true
             NSUbiquitousContainerName: WristChat
             NSUbiquitousContainerSupportedFolderLevels: Any
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app.watchkitapp
-        SUPPORTS_MACCATALYST: NO
-        TARGETED_DEVICE_FAMILY: "4"
-        SDKROOT: watchos
-        CODE_SIGN_IDENTITY: "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
-        SUPPORTED_PLATFORMS: "watchos watchsimulator"
     dependencies:
       - target: WristAssistantWatchWidgets
         embed: true
@@ -152,9 +158,12 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
         SKIP_INSTALL: NO
         CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-        "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS Widgets AppStore"
 
 schemes:
   WristAssistant:
