@@ -2,8 +2,8 @@
 
 A private, bring-your-own-key AI chat client for iPhone and Apple Watch. Speaks OpenAI- and Anthropic-compatible APIs.
 
-- **Website / Support:** <https://HaiGe120.github.io/WristAssistant/support.html>
-- **Privacy Policy:** <https://HaiGe120.github.io/WristAssistant/privacy.html>
+- **Website / Support:** <https://HaiGe120.github.io/WristChatUI/support.html>
+- **Privacy Policy:** <https://HaiGe120.github.io/WristChatUI/privacy.html>
 
 ## Features
 
@@ -42,7 +42,7 @@ archive the `WristAssistant` scheme.
 
 ## Privacy
 
-Wrist Assistant does not collect analytics, telemetry, or any data on the developer's servers. API keys live in the iOS Keychain, conversations in a local SwiftData store, and the only network calls are to the endpoints you configure. See the [Privacy Policy](https://HaiGe120.github.io/WristAssistant/privacy.html).
+WristChatUI does not collect analytics, telemetry, or any data on the developer's servers. API keys live in the iOS Keychain, conversations in a local SwiftData store, and the only network calls are to the endpoints you configure. See the [Privacy Policy](https://HaiGe120.github.io/WristChatUI/privacy.html).
 
 ## License
 
