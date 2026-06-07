@@ -103,7 +103,6 @@ cmd_build() {
     CODE_SIGN_IDENTITY=- \
     CODE_SIGNING_ALLOWED=YES \
     CODE_SIGNING_REQUIRED=YES \
-    CODE_SIGN_ENTITLEMENTS="${SCRIPT_DIR}/../App/WristAssistant.entitlements" \
     OTHER_CODE_SIGN_FLAGS="--strip-disallowed-xattrs" \
     build 2>&1 | tail -30
   log "build done: ${APP_PATH}"

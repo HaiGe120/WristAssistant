@@ -12,6 +12,8 @@ struct ConversationsView: View {
 
     @State private var presentingSettings = false
     @State private var isResyncing = false
+    @State private var isBackingUp = false
+    @State private var backupStatus: String?
     @State private var path: [ChatRoute] = []
 
     struct ChatRoute: Hashable {
@@ -44,6 +46,20 @@ struct ConversationsView: View {
                         presentingSettings = true
                     } label: {
                         Label("Endpoints", systemImage: "antenna.radiowaves.left.and.right")
+                    }
+
+                    Button {
+                        backUpConversations()
+                    } label: {
+                        Label(isBackingUp ? "Backing up..." : "Back Up to iCloud", systemImage: "icloud.and.arrow.up")
+                    }
+                    .disabled(conversations.isEmpty || isBackingUp)
+                }
+                if let backupStatus {
+                    Section {
+                        Text(backupStatus)
+                            .font(.caption2)
+                            .foregroundStyle(backupStatus.hasPrefix("Backup failed") ? .red : .secondary)
                     }
                 }
                 if conversations.isEmpty && !endpoints.endpoints.isEmpty {
@@ -173,6 +189,32 @@ struct ConversationsView: View {
         SyncCoordinator.shared.publishConversation(ConversationSnapshot(conv))
         convsLog.info("startNewChat: route append")
         path.append(ChatRoute(conversationID: conv.id, focusComposer: true))
+    }
+
+    private func backUpConversations() {
+        guard !isBackingUp else { return }
+        isBackingUp = true
+        backupStatus = nil
+
+        Task { @MainActor in
+            defer { isBackingUp = false }
+            do {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    SyncCoordinator.shared.requestConversationBackup { reply in
+                        switch reply {
+                        case .success(let count, let fileName):
+                            backupStatus = "Saved \(count) chat\(count == 1 ? "" : "s") to \(fileName ?? "iCloud")."
+                            continuation.resume()
+                        case .failure(let message):
+                            backupStatus = "Backup failed: \(message)"
+                            continuation.resume()
+                        }
+                    }
+                }
+            } catch {
+                backupStatus = "Backup failed: \(error.localizedDescription)"
+            }
+        }
     }
 
     private func delete(at offsets: IndexSet) {

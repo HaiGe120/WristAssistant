@@ -4,7 +4,10 @@ import SwiftData
 struct SettingsView: View {
     @EnvironmentObject private var endpoints: EndpointStore
     @EnvironmentObject private var sync: SyncCoordinator
+    @Query(sort: [SortDescriptor(\Conversation.updatedAt, order: .reverse)]) private var conversations: [Conversation]
     @State private var presentingNew = false
+    @State private var isBackingUp = false
+    @State private var backupStatus: String?
 
     var body: some View {
         NavigationStack {
@@ -42,6 +45,30 @@ struct SettingsView: View {
                         sync.objectWillChange.send()
                     } label: {
                         Label("Sync now", systemImage: "arrow.triangle.2.circlepath")
+                    }
+                }
+                Section("Conversation backups") {
+                    Button {
+                        backUpConversations()
+                    } label: {
+                        Label(isBackingUp ? "Backing up..." : "Back Up to iCloud", systemImage: "icloud.and.arrow.up")
+                    }
+                    .disabled(conversations.isEmpty || isBackingUp)
+
+                    if conversations.isEmpty {
+                        Text("No chats to back up yet.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("\(conversations.count) chat\(conversations.count == 1 ? "" : "s") will be saved as JSON in iCloud Drive.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let backupStatus {
+                        Text(backupStatus)
+                            .font(.caption2)
+                            .foregroundStyle(backupStatus.hasPrefix("Backup failed") ? .red : .secondary)
                     }
                 }
                 Section("Endpoints") {
@@ -111,6 +138,22 @@ struct SettingsView: View {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
         return short + " (" + build + ")"
+    }
+
+    private func backUpConversations() {
+        guard !isBackingUp else { return }
+        isBackingUp = true
+        backupStatus = nil
+
+        Task { @MainActor in
+            defer { isBackingUp = false }
+            do {
+                let result = try ConversationBackupStore.writeBackup(for: conversations)
+                backupStatus = "Saved \(result.conversationCount) chat\(result.conversationCount == 1 ? "" : "s") to \(result.fileName)."
+            } catch {
+                backupStatus = "Backup failed: \(error.localizedDescription)"
+            }
+        }
     }
 
     private var syncTitle: String {

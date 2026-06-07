@@ -20,7 +20,7 @@ public struct OpenAIProvider: AIProvider {
                     #endif
                     let (bytes, response) = try await StreamingHTTP.send(request)
                     #if DEBUG
-                    print("[WristAssistant] stream <- status \((response as? HTTPURLResponse)?.statusCode ?? -1)")
+                    print("[WristAssistant] stream <- status \(response.statusCode)")
                     #endif
 
                     var parser = SSEParser()

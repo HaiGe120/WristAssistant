@@ -55,10 +55,6 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
-	<key>UIDeviceFamily</key>
-	<array>
-		<integer>1</integer>
-	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

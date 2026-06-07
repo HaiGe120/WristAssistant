@@ -12,7 +12,7 @@
 #   2. xcodebuild archive (Release, generic/platform=iOS) into
 #      build/derived/WristChat.xcarchive.
 #   3. xcodebuild -exportArchive with scripts/ExportOptions-AppStore.plist
-#      into build/derived/ipa/WristChat.ipa.
+#      into build/derived/ipa/WristAssistant.ipa.
 #
 # Usage:
 #   scripts/release.sh                # archive + export (no upload)
@@ -34,7 +34,7 @@ SCHEME="WristAssistant"
 DERIVED="${ROOT}/build/derived"
 ARCHIVE_PATH="${DERIVED}/WristChat.xcarchive"
 EXPORT_DIR="${DERIVED}/ipa"
-IPA_PATH="${EXPORT_DIR}/WristChat.ipa"
+IPA_PATH="${EXPORT_DIR}/WristAssistant.ipa"
 EXPORT_OPTIONS="${SCRIPT_DIR}/ExportOptions-AppStore.plist"
 
 XCODE_DEV="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
@@ -67,6 +67,7 @@ xcodebuild \
   -archivePath "${ARCHIVE_PATH}" \
   -exportPath "${EXPORT_DIR}" \
   -exportOptionsPlist "${EXPORT_OPTIONS}" \
+  -allowProvisioningUpdates \
   2>&1 | tail -20
 
 if [[ ! -f "${IPA_PATH}" ]]; then

@@ -98,13 +98,6 @@ public struct EndpointConfig: Identifiable, Codable, Hashable, Sendable {
         return URL(string: origin + "/" + basePath + "/" + trimmed)
     }
 
-    public static let sampleOpenWebUI = EndpointConfig(
-        name: "Open WebUI (local)",
-        providerType: .openAICompatible,
-        baseURLString: "http://localhost:8080/v1",
-        model: "llama3.1"
-    )
-
     public static let sampleAnthropicCompat = EndpointConfig(
         name: "Anthropic-compatible (custom)",
         providerType: .anthropicCompatible,

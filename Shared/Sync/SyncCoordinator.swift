@@ -217,21 +217,17 @@ public final class SyncCoordinator: NSObject, ObservableObject {
                 SyncMessageKey.kind: SyncMessageKind.apiKey.rawValue,
                 SyncMessageKey.payload: (try? Self.encoder.encode(payload)) ?? Data()
             ]
-            do {
-                try session.sendMessage(message, replyHandler: { _ in
-                    Task { @MainActor in self.lastSyncedAt = Date() }
-                }) { error in
-                    Task { @MainActor in
-                        self.lastError = "sendMessage(apiKey) failed: \(error.localizedDescription)"
-                        // Fall back to transferUserInfo so the key is
-                        // still queued for later delivery.
-                        self.transferUserInfo(kind: .apiKey, payload: payload)
-                    }
+            session.sendMessage(message, replyHandler: { _ in
+                Task { @MainActor in self.lastSyncedAt = Date() }
+            }) { error in
+                Task { @MainActor in
+                    self.lastError = "sendMessage(apiKey) failed: \(error.localizedDescription)"
+                    // Fall back to transferUserInfo so the key is
+                    // still queued for later delivery.
+                    self.transferUserInfo(kind: .apiKey, payload: payload)
                 }
-                return
-            } catch {
-                lastError = "sendMessage(apiKey) threw: \(error.localizedDescription)"
             }
+            return
         }
         transferUserInfo(kind: .apiKey, payload: payload)
         #endif
@@ -259,22 +255,18 @@ public final class SyncCoordinator: NSObject, ObservableObject {
                     SyncMessageKey.kind: SyncMessageKind.apiKeys.rawValue,
                     SyncMessageKey.payload: data
                 ]
-                do {
-                    try session.sendMessage(message, replyHandler: { _ in
-                        Task { @MainActor in self.lastSyncedAt = Date() }
-                    }) { error in
-                        Task { @MainActor in
-                            self.lastError = "sendMessage(apiKeys) failed: \(error.localizedDescription)"
-                            // Fall back to one transferUserInfo per key.
-                            for k in keys {
-                                self.transferUserInfo(kind: .apiKey, payload: k)
-                            }
+                session.sendMessage(message, replyHandler: { _ in
+                    Task { @MainActor in self.lastSyncedAt = Date() }
+                }) { error in
+                    Task { @MainActor in
+                        self.lastError = "sendMessage(apiKeys) failed: \(error.localizedDescription)"
+                        // Fall back to one transferUserInfo per key.
+                        for k in keys {
+                            self.transferUserInfo(kind: .apiKey, payload: k)
                         }
                     }
-                    return
-                } catch {
-                    lastError = "sendMessage(apiKeys) threw: \(error.localizedDescription)"
                 }
+                return
             }
         }
         for k in keys {
@@ -363,12 +355,8 @@ public final class SyncCoordinator: NSObject, ObservableObject {
         let message: [String: Any] = [
             SyncMessageKey.kind: SyncMessageKind.requestEndpoints.rawValue
         ]
-        do {
-            try WCSession.default.sendMessage(message, replyHandler: nil) { error in
-                Task { @MainActor in self.lastError = "requestEndpoints failed: \(error.localizedDescription)" }
-            }
-        } catch {
-            lastError = "requestEndpoints sendMessage error: \(error.localizedDescription)"
+        WCSession.default.sendMessage(message, replyHandler: nil) { error in
+            Task { @MainActor in self.lastError = "requestEndpoints failed: \(error.localizedDescription)" }
         }
         #endif
     }
@@ -384,13 +372,54 @@ public final class SyncCoordinator: NSObject, ObservableObject {
         let message: [String: Any] = [
             SyncMessageKey.kind: SyncMessageKind.requestConversations.rawValue
         ]
-        do {
-            try WCSession.default.sendMessage(message, replyHandler: nil) { error in
-                Task { @MainActor in self.lastError = "requestConversations failed: \(error.localizedDescription)" }
-            }
-        } catch {
-            lastError = "requestConversations sendMessage error: \(error.localizedDescription)"
+        WCSession.default.sendMessage(message, replyHandler: nil) { error in
+            Task { @MainActor in self.lastError = "requestConversations failed: \(error.localizedDescription)" }
         }
+        #endif
+    }
+
+    /// Ask the paired iPhone to write the current conversation catalog to
+    /// iCloud. The watch does not own the iCloud container directly; keeping
+    /// the export on iOS avoids adding iCloud provisioning requirements to
+    /// the embedded watchOS app.
+    public func requestConversationBackup(replyHandler: @escaping (ConversationBackupReply) -> Void) {
+        #if canImport(WatchConnectivity)
+        guard isSupported, WCSession.default.activationState == .activated else {
+            replyHandler(.failure("Watch sync is not active."))
+            return
+        }
+        let session = WCSession.default
+        guard session.isReachable else {
+            replyHandler(.failure("The paired iPhone is not reachable."))
+            return
+        }
+        let message: [String: Any] = [
+            SyncMessageKey.kind: SyncMessageKind.requestConversationBackup.rawValue
+        ]
+        session.sendMessage(message, replyHandler: { reply in
+            Task { @MainActor in
+                guard let kindRaw = reply[SyncMessageKey.kind] as? String,
+                      kindRaw == SyncMessageKind.conversationBackupResult.rawValue,
+                      let data = reply[SyncMessageKey.payload] as? Data,
+                      let payload = try? Self.decoder.decode(ConversationBackupResultPayload.self, from: data) else {
+                    replyHandler(.failure("The iPhone did not return a backup result."))
+                    return
+                }
+                self.lastSyncedAt = Date()
+                if payload.succeeded {
+                    replyHandler(.success(conversationCount: payload.conversationCount, fileName: payload.fileName))
+                } else {
+                    replyHandler(.failure(payload.message))
+                }
+            }
+        }) { error in
+            Task { @MainActor in
+                self.lastError = "requestConversationBackup failed: \(error.localizedDescription)"
+                replyHandler(.failure(error.localizedDescription))
+            }
+        }
+        #else
+        replyHandler(.failure("Watch sync is not supported."))
         #endif
     }
 
@@ -574,6 +603,41 @@ extension SyncCoordinator: @preconcurrency WCSessionDelegate {
             replyHandler([:])
             return
         }
+        if kind == .requestConversationBackup {
+            let context = DataStore.shared.mainContext
+            let descriptor = FetchDescriptor<Conversation>(
+                sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+            )
+            let convs = (try? context.fetch(descriptor)) ?? []
+            let result: ConversationBackupResultPayload
+            do {
+                let backup = try ConversationBackupStore.writeBackup(for: convs)
+                result = ConversationBackupResultPayload(
+                    succeeded: true,
+                    conversationCount: backup.conversationCount,
+                    fileName: backup.fileName,
+                    message: "Saved \(backup.conversationCount) chat\(backup.conversationCount == 1 ? "" : "s") to \(backup.fileName)."
+                )
+            } catch {
+                result = ConversationBackupResultPayload(
+                    succeeded: false,
+                    conversationCount: convs.count,
+                    fileName: nil,
+                    message: error.localizedDescription
+                )
+            }
+            if let data = try? Self.encoder.encode(result) {
+                let reply: [String: Any] = [
+                    SyncMessageKey.kind: SyncMessageKind.conversationBackupResult.rawValue,
+                    SyncMessageKey.payload: data
+                ]
+                replyHandler(reply)
+                Task { @MainActor in self.lastSyncedAt = Date() }
+                return
+            }
+            replyHandler([:])
+            return
+        }
         handle(kind: kind, raw: message)
         replyHandler([:])
     }
@@ -629,6 +693,8 @@ extension SyncCoordinator: @preconcurrency WCSessionDelegate {
                 case .deleteConversation:
                     let payload = try Self.decoder.decode(DeleteConversationPayload.self, from: payloadData)
                     SyncInbox.shared.deleteConversation(payload.conversationID)
+                case .requestConversationBackup, .conversationBackupResult:
+                    break
                 }
                 self.lastSyncedAt = Date()
             } catch {
@@ -675,6 +741,8 @@ public enum SyncMessageKind: String, Codable, Sendable {
     case requestAPIKeys
     case requestConversations
     case deleteConversation
+    case requestConversationBackup
+    case conversationBackupResult
 }
 
 // MARK: - Payloads
@@ -772,6 +840,18 @@ public struct MessageEnvelope: Codable, Sendable {
     let conversationID: UUID
     let message: MessageSnapshot
     let sentAt: Date
+}
+
+public enum ConversationBackupReply: Sendable {
+    case success(conversationCount: Int, fileName: String?)
+    case failure(String)
+}
+
+public struct ConversationBackupResultPayload: Codable, Sendable {
+    let succeeded: Bool
+    let conversationCount: Int
+    let fileName: String?
+    let message: String
 }
 
 /// Tells the companion that a conversation was deleted on this side.

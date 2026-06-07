@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: com.wristassistant
   deploymentTarget:
     iOS: "26.0"
-    watchOS: "26.0"
+    watchOS: "11.0"
   createIntermediateGroups: true
   groupSortPosition: top
   generateEmptyDirectories: true
@@ -21,8 +21,7 @@ settings:
     CURRENT_PROJECT_VERSION: 1
     MARKETING_VERSION: "1.0"
     IPHONEOS_DEPLOYMENT_TARGET: "26.0"
-    WATCHOS_DEPLOYMENT_TARGET: "26.0"
-    SUPPORTED_PLATFORMS: "iphoneos iphonesimulator watchos watchsimulator"
+    WATCHOS_DEPLOYMENT_TARGET: "11.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     SUPPORTS_MACCATALYST: NO
     SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
@@ -38,16 +37,16 @@ targets:
       - path: Shared
     entitlements:
       path: App/WristAssistant.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.wristassistant.app
+        com.apple.developer.icloud-services:
+          - CloudDocuments
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         TARGETED_DEVICE_FAMILY: "1"
-      configs:
-        Release:
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "Apple Distribution"
-          "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat iOS AppStore 1.0"
     resources:
       - path: App/Resources
         optional: true
@@ -55,8 +54,6 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: WristChatUI
-        UIDeviceFamily:
-          - 1
         CFBundleURLTypes:
           - CFBundleURLName: com.wristassistant.app
             CFBundleURLSchemes:
@@ -93,21 +90,15 @@ targets:
         excludes:
           - "**/.archive/**"
       - path: Shared
-    entitlements:
-      path: Watch/WristAssistantWatch.entitlements
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app.watchkitapp
         SUPPORTS_MACCATALYST: NO
         TARGETED_DEVICE_FAMILY: "4"
         SDKROOT: watchos
+        SUPPORTED_PLATFORMS: "watchos watchsimulator"
+        SKIP_INSTALL: NO
         CODE_SIGN_STYLE: Automatic
-      configs:
-        Release:
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "Apple Distribution"
-          "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS AppStore 1.0"
     resources:
       - path: Watch/Resources
         optional: true
@@ -115,8 +106,6 @@ targets:
       path: Watch/Info.plist
       properties:
         CFBundleDisplayName: WristChatUI
-        UIDeviceFamily:
-          - 4
         WKApplication: true
         WKWatchOnly: false
         WKCompanionAppBundleIdentifier: com.wristassistant.app
@@ -124,11 +113,7 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: false
           NSAllowsLocalNetworking: true
-        NSUbiquitousContainers:
-          iCloud.com.wristassistant.app:
-            NSUbiquitousContainerIsDocumentScopePublic: true
-            NSUbiquitousContainerName: WristChatUI
-            NSUbiquitousContainerSupportedFolderLevels: Any
+
     dependencies:
       - target: WristAssistantWatchWidgets
         embed: true
@@ -158,19 +143,12 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
         SKIP_INSTALL: NO
         CODE_SIGN_STYLE: Automatic
-      configs:
-        Release:
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "Apple Distribution"
-          "CODE_SIGN_IDENTITY[sdk=watchos*]": "Apple Distribution"
-          PROVISIONING_PROFILE_SPECIFIER: "WristChat watchOS Widgets AppStore 1.0"
 
 schemes:
   WristAssistant:
     build:
       targets:
         WristAssistant: all
-        WristAssistantWatch: all
     run:
       config: Debug
     test:

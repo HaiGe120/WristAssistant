@@ -32,7 +32,6 @@ public final class EndpointStore: ObservableObject {
             // seeded because the picker was collapsed — users who want
             // those services tap "+" and type the URL themselves.
             endpoints = [
-                .sampleOpenWebUI,
                 .sampleAnthropicCompat,
                 .sampleMiniMax,
                 .sampleMiniMaxAnthropic
@@ -48,11 +47,15 @@ public final class EndpointStore: ObservableObject {
     public func load() {
         guard let data = UserDefaults.standard.data(forKey: key) else { return }
         if let decoded = try? JSONDecoder().decode([EndpointConfig].self, from: data) {
-            endpoints = decoded
+            endpoints = decoded.filter { !Self.isLegacyLlamaSeed($0) }
         }
         if let raw = UserDefaults.standard.string(forKey: activeKey) {
             activeEndpointID = UUID(uuidString: raw)
         }
+        if activeEndpointID.map({ id in !endpoints.contains(where: { $0.id == id }) }) == true {
+            activeEndpointID = endpoints.first?.id
+        }
+        persist()
     }
 
     public func save(_ updated: EndpointConfig) {
@@ -131,5 +134,11 @@ public final class EndpointStore: ObservableObject {
         if let id = activeEndpointID {
             UserDefaults.standard.set(id.uuidString, forKey: activeKey)
         }
+    }
+
+    private static func isLegacyLlamaSeed(_ endpoint: EndpointConfig) -> Bool {
+        endpoint.name == "Open WebUI (local)"
+            && endpoint.baseURLString == "http://localhost:8080/v1"
+            && endpoint.model == "llama3.1"
     }
 }
