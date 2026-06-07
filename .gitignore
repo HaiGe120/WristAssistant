@@ -25,3 +25,6 @@ Package.resolved
 *.mobileprovision
 *.provisionprofile
 export.p12
+
+# App Store Connect upload staging area (not source)
+for.app.store.connect.screenshots/
