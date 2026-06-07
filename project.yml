@@ -8,7 +8,7 @@ options:
   groupSortPosition: top
   generateEmptyDirectories: true
   developmentLanguage: en
-  xcodeVersion: "16.0"
+  xcodeVersion: "26.5"
 
 settings:
   base:
