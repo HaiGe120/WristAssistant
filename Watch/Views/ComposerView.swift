@@ -15,6 +15,7 @@ struct ComposerView: View {
     let canSend: Bool
     let focusTrigger: Int
     let onSend: () -> Void
+    let onSubmitText: (String) -> Void
 
     @State private var isPresentingTextInput = false
     @State private var lastHandledFocusTrigger = 0
@@ -72,6 +73,13 @@ struct ComposerView: View {
         }
         .buttonStyle(.plain)
         .disabled(!isStreaming && !canSend)
+        .accessibilityLabel(isStreaming ? "Stop response" : "Send message")
+        .accessibilityAction(.magicTap) {
+            if isStreaming || canSend {
+                onSend()
+            }
+        }
+        .handGestureShortcut(.primaryAction, isEnabled: isStreaming || canSend)
     }
 
     private func focusInput() {
@@ -102,6 +110,7 @@ struct ComposerView: View {
                 let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !trimmed.isEmpty else { return }
                 text = trimmed
+                onSubmitText(trimmed)
             }
         }
     }

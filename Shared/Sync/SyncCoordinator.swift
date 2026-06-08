@@ -423,6 +423,50 @@ public final class SyncCoordinator: NSObject, ObservableObject {
         #endif
     }
 
+    /// Ask the paired iPhone to restore the latest iCloud backup into its
+    /// SwiftData store, then use the normal conversation pull to mirror the
+    /// restored rows back onto the watch.
+    public func requestConversationRestore(replyHandler: @escaping (ConversationBackupReply) -> Void) {
+        #if canImport(WatchConnectivity)
+        guard isSupported, WCSession.default.activationState == .activated else {
+            replyHandler(.failure("Watch sync is not active."))
+            return
+        }
+        let session = WCSession.default
+        guard session.isReachable else {
+            replyHandler(.failure("The paired iPhone is not reachable."))
+            return
+        }
+        let message: [String: Any] = [
+            SyncMessageKey.kind: SyncMessageKind.requestConversationRestore.rawValue
+        ]
+        session.sendMessage(message, replyHandler: { reply in
+            Task { @MainActor in
+                guard let kindRaw = reply[SyncMessageKey.kind] as? String,
+                      kindRaw == SyncMessageKind.conversationRestoreResult.rawValue,
+                      let data = reply[SyncMessageKey.payload] as? Data,
+                      let payload = try? Self.decoder.decode(ConversationBackupResultPayload.self, from: data) else {
+                    replyHandler(.failure("The iPhone did not return a restore result."))
+                    return
+                }
+                self.lastSyncedAt = Date()
+                if payload.succeeded {
+                    replyHandler(.success(conversationCount: payload.conversationCount, fileName: payload.fileName))
+                } else {
+                    replyHandler(.failure(payload.message))
+                }
+            }
+        }) { error in
+            Task { @MainActor in
+                self.lastError = "requestConversationRestore failed: \(error.localizedDescription)"
+                replyHandler(.failure(error.localizedDescription))
+            }
+        }
+        #else
+        replyHandler(.failure("Watch sync is not supported."))
+        #endif
+    }
+
     // MARK: - Internal helpers
 
     #if canImport(WatchConnectivity)
@@ -638,6 +682,38 @@ extension SyncCoordinator: @preconcurrency WCSessionDelegate {
             replyHandler([:])
             return
         }
+        if kind == .requestConversationRestore {
+            let context = DataStore.shared.mainContext
+            let result: ConversationBackupResultPayload
+            do {
+                let restore = try ConversationBackupStore.restoreLatestBackup(into: context)
+                self.publishConversations(restore.conversations)
+                result = ConversationBackupResultPayload(
+                    succeeded: true,
+                    conversationCount: restore.conversationCount,
+                    fileName: restore.fileName,
+                    message: "Restored \(restore.conversationCount) chat\(restore.conversationCount == 1 ? "" : "s") from \(restore.fileName)."
+                )
+            } catch {
+                result = ConversationBackupResultPayload(
+                    succeeded: false,
+                    conversationCount: 0,
+                    fileName: nil,
+                    message: error.localizedDescription
+                )
+            }
+            if let data = try? Self.encoder.encode(result) {
+                let reply: [String: Any] = [
+                    SyncMessageKey.kind: SyncMessageKind.conversationRestoreResult.rawValue,
+                    SyncMessageKey.payload: data
+                ]
+                replyHandler(reply)
+                Task { @MainActor in self.lastSyncedAt = Date() }
+                return
+            }
+            replyHandler([:])
+            return
+        }
         handle(kind: kind, raw: message)
         replyHandler([:])
     }
@@ -693,7 +769,7 @@ extension SyncCoordinator: @preconcurrency WCSessionDelegate {
                 case .deleteConversation:
                     let payload = try Self.decoder.decode(DeleteConversationPayload.self, from: payloadData)
                     SyncInbox.shared.deleteConversation(payload.conversationID)
-                case .requestConversationBackup, .conversationBackupResult:
+                case .requestConversationBackup, .conversationBackupResult, .requestConversationRestore, .conversationRestoreResult:
                     break
                 }
                 self.lastSyncedAt = Date()
@@ -743,6 +819,8 @@ public enum SyncMessageKind: String, Codable, Sendable {
     case deleteConversation
     case requestConversationBackup
     case conversationBackupResult
+    case requestConversationRestore
+    case conversationRestoreResult
 }
 
 // MARK: - Payloads

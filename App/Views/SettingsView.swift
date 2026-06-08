@@ -2,11 +2,13 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var endpoints: EndpointStore
     @EnvironmentObject private var sync: SyncCoordinator
     @Query(sort: [SortDescriptor(\Conversation.updatedAt, order: .reverse)]) private var conversations: [Conversation]
     @State private var presentingNew = false
     @State private var isBackingUp = false
+    @State private var isRestoring = false
     @State private var backupStatus: String?
 
     var body: some View {
@@ -55,6 +57,13 @@ struct SettingsView: View {
                     }
                     .disabled(conversations.isEmpty || isBackingUp)
 
+                    Button {
+                        restoreConversations()
+                    } label: {
+                        Label(isRestoring ? "Restoring..." : "Restore from iCloud", systemImage: "icloud.and.arrow.down")
+                    }
+                    .disabled(isRestoring)
+
                     if conversations.isEmpty {
                         Text("No chats to back up yet.")
                             .font(.caption2)
@@ -68,7 +77,7 @@ struct SettingsView: View {
                     if let backupStatus {
                         Text(backupStatus)
                             .font(.caption2)
-                            .foregroundStyle(backupStatus.hasPrefix("Backup failed") ? .red : .secondary)
+                            .foregroundStyle(isFailureStatus(backupStatus) ? .red : .secondary)
                     }
                 }
                 Section("Endpoints") {
@@ -156,6 +165,24 @@ struct SettingsView: View {
         }
     }
 
+    private func restoreConversations() {
+        guard !isRestoring else { return }
+        isRestoring = true
+        backupStatus = nil
+        let context = modelContext
+
+        Task { @MainActor in
+            defer { isRestoring = false }
+            do {
+                let result = try ConversationBackupStore.restoreLatestBackup(into: context)
+                backupStatus = "Restored \(result.conversationCount) chat\(result.conversationCount == 1 ? "" : "s") from \(result.fileName)."
+                SyncCoordinator.shared.publishConversations(result.conversations)
+            } catch {
+                backupStatus = "Restore failed: \(error.localizedDescription)"
+            }
+        }
+    }
+
     private var syncTitle: String {
         switch sync.activationState {
         case .activated:
@@ -174,6 +201,10 @@ struct SettingsView: View {
     private var syncTint: Color {
         guard sync.activationState == .activated, sync.isCompanionReachable else { return .secondary }
         return .green
+    }
+
+    private func isFailureStatus(_ status: String) -> Bool {
+        status.hasPrefix("Backup failed") || status.hasPrefix("Restore failed")
     }
 }
 

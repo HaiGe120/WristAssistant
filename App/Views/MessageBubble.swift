@@ -33,32 +33,11 @@ struct MessageBubble: View {
         return message.content
     }
 
-    /// Render the content as markdown. `AttributedString(markdown:)` handles
-    /// bold/italic/code/links/lists/headings/blockquotes. Falls back to
-    /// the raw string if parsing fails (e.g. unbalanced delimiters mid-
-    /// stream). The "…" placeholder skips parsing entirely.
-    @ViewBuilder
-    private var renderedContent: some View {
-        let raw = displayContent
-        if raw.isEmpty {
-            Text("…")
-        } else if let attributed = try? AttributedString(
-            markdown: raw,
-            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
-        ) {
-            Text(attributed)
-                .textSelection(.enabled)
-        } else {
-            Text(raw)
-                .textSelection(.enabled)
-        }
-    }
-
     var body: some View {
         HStack {
             if isUser { Spacer(minLength: 40) }
             VStack(alignment: isUser ? .trailing : .leading, spacing: 4) {
-                renderedContent
+                MarkdownText(raw: displayContent, enablesSelection: true)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
                     .background(isUser ? Color.accentColor : assistantBackground)

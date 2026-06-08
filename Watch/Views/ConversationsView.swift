@@ -13,6 +13,7 @@ struct ConversationsView: View {
     @State private var presentingSettings = false
     @State private var isResyncing = false
     @State private var isBackingUp = false
+    @State private var isRestoring = false
     @State private var backupStatus: String?
     @State private var path: [ChatRoute] = []
 
@@ -54,12 +55,19 @@ struct ConversationsView: View {
                         Label(isBackingUp ? "Backing up..." : "Back Up to iCloud", systemImage: "icloud.and.arrow.up")
                     }
                     .disabled(conversations.isEmpty || isBackingUp)
+
+                    Button {
+                        restoreConversations()
+                    } label: {
+                        Label(isRestoring ? "Restoring..." : "Restore from iCloud", systemImage: "icloud.and.arrow.down")
+                    }
+                    .disabled(isRestoring)
                 }
                 if let backupStatus {
                     Section {
                         Text(backupStatus)
                             .font(.caption2)
-                            .foregroundStyle(backupStatus.hasPrefix("Backup failed") ? .red : .secondary)
+                            .foregroundStyle(isFailureStatus(backupStatus) ? .red : .secondary)
                     }
                 }
                 if conversations.isEmpty && !endpoints.endpoints.isEmpty {
@@ -217,6 +225,33 @@ struct ConversationsView: View {
         }
     }
 
+    private func restoreConversations() {
+        guard !isRestoring else { return }
+        isRestoring = true
+        backupStatus = nil
+
+        Task { @MainActor in
+            defer { isRestoring = false }
+            do {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    SyncCoordinator.shared.requestConversationRestore { reply in
+                        switch reply {
+                        case .success(let count, let fileName):
+                            backupStatus = "Restored \(count) chat\(count == 1 ? "" : "s") from \(fileName ?? "iCloud")."
+                            SyncCoordinator.shared.requestConversations()
+                            continuation.resume()
+                        case .failure(let message):
+                            backupStatus = "Restore failed: \(message)"
+                            continuation.resume()
+                        }
+                    }
+                }
+            } catch {
+                backupStatus = "Restore failed: \(error.localizedDescription)"
+            }
+        }
+    }
+
     private func delete(at offsets: IndexSet) {
         let ids = offsets.map { conversations[$0].id }
         for index in offsets {
@@ -226,6 +261,10 @@ struct ConversationsView: View {
         for id in ids {
             SyncCoordinator.shared.publishDeleteConversation(id)
         }
+    }
+
+    private func isFailureStatus(_ status: String) -> Bool {
+        status.hasPrefix("Backup failed") || status.hasPrefix("Restore failed")
     }
 }
 

@@ -1,7 +1,8 @@
-# Wrist Assistant
+# WristChatUI
 
 A private, bring-your-own-key AI chat client for iPhone and Apple Watch. Speaks OpenAI- and Anthropic-compatible APIs.
 
+- **Download:** Search for **WristChatUI** on the App Store.
 - **Website / Support:** <https://HaiGe120.github.io/WristChatUI/support.html>
 - **Privacy Policy:** <https://HaiGe120.github.io/WristChatUI/privacy.html>
 
@@ -11,7 +12,7 @@ A private, bring-your-own-key AI chat client for iPhone and Apple Watch. Speaks 
 - Multi-provider: any OpenAI- or Anthropic-compatible endpoint (OpenAI, Anthropic, MiniMax, Open WebUI, custom gateways)
 - Apple Watch complications and Smart Stack widget for one-tap new chats
 - Siri Shortcuts integration on iPhone and Watch
-- iCloud Drive backup of all conversations (opt-in)
+- iCloud Drive backup and restore of all conversations (opt-in)
 - iOS Keychain for API keys, SwiftData for chat history, no telemetry
 
 ## Requirements
@@ -46,4 +47,4 @@ WristChatUI does not collect analytics, telemetry, or any data on the developer'
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Source-available for noncommercial use. Commercial use requires prior written permission. See [LICENSE](LICENSE).

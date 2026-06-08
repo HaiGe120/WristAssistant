@@ -23,6 +23,7 @@
 		1FD2679E83FBE31780BAA30D /* SSEParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006236178E4A3B9827267270 /* SSEParser.swift */; };
 		2156FFF1C4072F06BD9E2FE2 /* OpenAIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893800D61C67EA64ECD3D3F4 /* OpenAIProvider.swift */; };
 		22714F8C02FC85ADE89CF187 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B29BBF0602A5A7E64E8C9D /* SettingsView.swift */; };
+		28A3A896EB25342F9F70B704 /* MarkdownText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886A7177B9F5D129BF4688C4 /* MarkdownText.swift */; };
 		293A5D698CCA4CA477A35470 /* SyncInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E41F9EAF8F8E5F5B1A3071 /* SyncInbox.swift */; };
 		32035CC5CEA3F9595DB28FE9 /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2AC0835E1D1FFBD5C9DFED /* MessageBubble.swift */; };
 		34BE4CA608C2ED9235552498 /* WristAssistantWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CEA4BD80C446B4113CCCD1 /* WristAssistantWatchApp.swift */; };
@@ -34,6 +35,7 @@
 		55F3620C4288732C8882E7C2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7159BDD58BE9084A6D0272C3 /* PrivacyInfo.xcprivacy */; };
 		57C52CA1192B4762BBF28947 /* WristAssistantApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19B6A6F5509B5B15B547A8D /* WristAssistantApp.swift */; };
 		5E851285109809A136D9FAA1 /* AIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFCD8759ADC919F31E57ADC /* AIProvider.swift */; };
+		5FD0D301AE5CF414B3E916F2 /* MarkdownText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886A7177B9F5D129BF4688C4 /* MarkdownText.swift */; };
 		64D2D379475DD156302AE830 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9752F12A494EF21EDD81719B /* RootView.swift */; };
 		655A53FB623589D63D20398C /* SyncInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E41F9EAF8F8E5F5B1A3071 /* SyncInbox.swift */; };
 		719452176FA3BD67F6EBC1DB /* ComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73C6072620B1FD7532DF5EB /* ComposerView.swift */; };
@@ -131,11 +133,12 @@
 		4AF8008686010571BB0E0D5A /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		4DFC1CE610E1300279CFC863 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		61F0BD63211ED1157A21154F /* WatchWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetsBundle.swift; sourceTree = "<group>"; };
-		7159BDD58BE9084A6D0272C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7159BDD58BE9084A6D0272C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		75C7DCA186C558B959EFD501 /* AIProviderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProviderType.swift; sourceTree = "<group>"; };
 		77B05048DE989D4F393C540A /* NewChatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatWidget.swift; sourceTree = "<group>"; };
 		77E41F9EAF8F8E5F5B1A3071 /* SyncInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncInbox.swift; sourceTree = "<group>"; };
 		7F04D2D8F1465435B3412557 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		886A7177B9F5D129BF4688C4 /* MarkdownText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownText.swift; sourceTree = "<group>"; };
 		893800D61C67EA64ECD3D3F4 /* OpenAIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIProvider.swift; sourceTree = "<group>"; };
 		89CEA4BD80C446B4113CCCD1 /* WristAssistantWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WristAssistantWatchApp.swift; sourceTree = "<group>"; };
 		8B808A7922FF822B54B955BF /* WristAssistantWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WristAssistantWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,7 +160,7 @@
 		E6A8EA7E5CB7CEE7983D6890 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		E985B9DF5E42E655AD079A07 /* ConversationBackupStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationBackupStore.swift; sourceTree = "<group>"; };
 		EF7EAAB2DE511391E36FA5D0 /* MessageRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRole.swift; sourceTree = "<group>"; };
-		F253AFADC5F4E4292F7424B0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F253AFADC5F4E4292F7424B0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F5A577ED8B7DBB280E710E9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F86454CCA99340E567D54A19 /* EndpointConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointConfig.swift; sourceTree = "<group>"; };
 		F9F9E7B7B8CCB23B79DAC63B /* WristAssistantShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WristAssistantShortcuts.swift; sourceTree = "<group>"; };
@@ -200,6 +203,14 @@
 				61F0BD63211ED1157A21154F /* WatchWidgetsBundle.swift */,
 			);
 			path = Widgets;
+			sourceTree = "<group>";
+		};
+		59BA42AE6134DE4B997FBCD3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				886A7177B9F5D129BF4688C4 /* MarkdownText.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		6EDA1903FFB41A1D51231873 /* Views */ = {
@@ -327,6 +338,7 @@
 				4707F618B65BBB6ACFECE1F0 /* Providers */,
 				825CF1814B6EDFB1B7CE6B6A /* Storage */,
 				061374A6957E52AED44AFDCB /* Sync */,
+				59BA42AE6134DE4B997FBCD3 /* Views */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -496,6 +508,7 @@
 				CFBC3D7F6C3B654A7E777CC2 /* EndpointEditorView.swift in Sources */,
 				01CD1F9A72DB59993E57ADEB /* EndpointStore.swift in Sources */,
 				FB07A08C1CFC75523F04454B /* KeychainStore.swift in Sources */,
+				5FD0D301AE5CF414B3E916F2 /* MarkdownText.swift in Sources */,
 				98E0EE5937EF9867D30B9E76 /* Message.swift in Sources */,
 				32035CC5CEA3F9595DB28FE9 /* MessageBubble.swift in Sources */,
 				CA07868B4996D819CA8BE0F7 /* MessageRole.swift in Sources */,
@@ -540,6 +553,7 @@
 				BADA892B84A7689B54EF3652 /* EndpointConfig.swift in Sources */,
 				A04097D8BF0753C86C154EFA /* EndpointStore.swift in Sources */,
 				03B00D7B614386056A748BB4 /* KeychainStore.swift in Sources */,
+				28A3A896EB25342F9F70B704 /* MarkdownText.swift in Sources */,
 				0A8448154EC972138AEB6BB1 /* Message.swift in Sources */,
 				362B0702A3A0E896325DA983 /* MessageRole.swift in Sources */,
 				13188639919EFB1CC51B7F9E /* OpenAIProvider.swift in Sources */,
@@ -602,7 +616,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp.widgets;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -636,7 +650,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -798,7 +812,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp.widgets;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -814,7 +828,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 4;

@@ -87,7 +87,8 @@ struct ChatView: View {
                         isStreaming: engine.isStreaming,
                         canSend: canSend,
                         focusTrigger: focusComposerTrigger,
-                        onSend: send
+                        onSend: { send() },
+                        onSubmitText: { send($0) }
                     )
                     .id(composerID)
                 }
@@ -134,13 +135,13 @@ struct ChatView: View {
         return streamingContent
     }
 
-    private func send() {
+    private func send(_ submittedText: String? = nil) {
         if engine.isStreaming {
             engine.cancel()
             return
         }
-        guard canSend, let endpoint else { return }
-        let userText = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        let userText = (submittedText ?? draft).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !userText.isEmpty, let endpoint else { return }
         draft = ""
         streamingContent = ""
 
@@ -186,26 +187,11 @@ private struct WatchMessageRow: View {
         return message.content
     }
 
-    @ViewBuilder
-    private var renderedContent: some View {
-        let raw = displayContent
-        if raw.isEmpty {
-            Text("…")
-        } else if let attributed = try? AttributedString(
-            markdown: raw,
-            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
-        ) {
-            Text(attributed)
-        } else {
-            Text(raw)
-        }
-    }
-
     var body: some View {
         HStack(alignment: .top) {
             if isUser { Spacer(minLength: 24) }
             VStack(alignment: isUser ? .trailing : .leading, spacing: 2) {
-                renderedContent
+                MarkdownText(raw: displayContent)
                     .font(.body)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 6)
