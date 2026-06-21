@@ -179,8 +179,8 @@ struct WatchEndpointEditor: View {
 
     private func shortName(_ type: AIProviderType) -> String {
         switch type {
-        case .openAI, .openAICompatible: return "OAI-compat"
-        case .anthropic, .anthropicCompatible: return "Ant-compat"
+        case .openAI, .openAICompatible: return "Chat API"
+        case .anthropic, .anthropicCompatible: return "Chat API"
         }
     }
 

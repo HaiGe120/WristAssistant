@@ -40,29 +40,24 @@ public struct EndpointConfig: Identifiable, Codable, Hashable, Sendable {
     }
 
     public func chatCompletionsURL() -> URL? {
-        // The base URL is always user-supplied now (the picker was
-        // collapsed to compat-only). Falling back to a hard-coded
-        // default would re-introduce the OpenAI/Anthropic magic the
-        // user just asked us to remove.
         guard let base = baseURL else { return nil }
         return Self.resolveChatURL(base: base, chatPath: providerType.defaultChatPath)
     }
 
-    /// Compose `<base><chatPath>`, avoiding the doubled-prefix bug that
-    /// bit MiniMax and other Anthropic-compatible gateways whose base
-    /// URL already ends in `/v1`.
+    public func modelsURL() -> URL? {
+        guard let base = baseURL else { return nil }
+        return Self.resolveModelsURL(base: base)
+    }
+
+    /// Compose `<base><chatPath>`, avoiding doubled-prefix bugs when the user
+    /// pastes a full endpoint URL instead of an API root.
     ///
     /// The chat path can be expressed two ways depending on the provider:
     ///
-    /// - **Sub-path form** (`/chat/completions`): the chat path is meant
-    ///   to be appended to the base's existing path. With base
-    ///   `https://api.openai.com/v1` this yields
-    ///   `https://api.openai.com/v1/chat/completions` — the desired
-    ///   OpenAI URL.
+    /// - **Sub-path form** (`/chat/completions`): the chat path is appended to
+    ///   the API root, yielding `https://api.openai.com/v1/chat/completions`.
     /// - **Absolute form** (`/v1/messages`): the chat path is the full
-    ///   absolute path. With base `https://api.minimaxi.com/v1` we want
-    ///   `https://api.minimaxi.com/v1/messages`, not
-    ///   `https://api.minimaxi.com/v1/v1/messages`.
+    ///   absolute path and is kept intact for providers such as Anthropic.
     ///
     /// Foundation's `appendingPathComponent` always appends, so the
     /// absolute form collides whenever the base already has a matching
@@ -85,6 +80,12 @@ public struct EndpointConfig: Identifiable, Codable, Hashable, Sendable {
         // empty string for the origin-only case.
         let basePath = base.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         let trimmed = chatPath.hasPrefix("/") ? String(chatPath.dropFirst()) : chatPath
+        if basePath == "v1/responses" || basePath.hasSuffix("/v1/responses") || basePath == "responses" || basePath.hasSuffix("/responses") {
+            return URL(string: origin + "/" + basePath)
+        }
+        if !trimmed.isEmpty, (basePath == trimmed || basePath.hasSuffix("/" + trimmed)) {
+            return URL(string: origin + "/" + basePath)
+        }
         // Absolute form: the chat path already starts with the same
         // segment(s) the base path uses. Just put the trimmed chat
         // path directly on the origin.
@@ -96,6 +97,36 @@ public struct EndpointConfig: Identifiable, Codable, Hashable, Sendable {
             return URL(string: origin + "/" + trimmed)
         }
         return URL(string: origin + "/" + basePath + "/" + trimmed)
+    }
+
+    static func resolveModelsURL(base: URL) -> URL? {
+        guard let comps = URLComponents(url: base, resolvingAgainstBaseURL: false) else {
+            return base
+        }
+        var originComponents = comps
+        originComponents.path = ""
+        originComponents.query = nil
+        originComponents.fragment = nil
+        guard let originURL = originComponents.url else { return base }
+        let origin = originURL.absoluteString
+        var basePath = base.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if basePath == "v1/chat/completions" || basePath.hasSuffix("/v1/chat/completions") {
+            basePath = String(basePath.dropLast("/chat/completions".count))
+        } else if basePath == "chat/completions" || basePath.hasSuffix("/chat/completions") {
+            basePath = String(basePath.dropLast("/chat/completions".count))
+        } else if basePath == "v1/responses" || basePath.hasSuffix("/v1/responses") {
+            basePath = String(basePath.dropLast("/responses".count))
+        } else if basePath == "responses" || basePath.hasSuffix("/responses") {
+            basePath = String(basePath.dropLast("/responses".count))
+        }
+        basePath = basePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if basePath.hasSuffix("v1") {
+            return URL(string: origin + "/" + basePath + "/models")
+        }
+        if basePath.isEmpty {
+            return URL(string: origin + "/v1/models")
+        }
+        return URL(string: origin + "/" + basePath + "/v1/models")
     }
 
     public static let sampleAnthropicCompat = EndpointConfig(

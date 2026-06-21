@@ -1,9 +1,10 @@
 import Foundation
 
-/// The wire format the endpoint speaks. There are exactly two on-the-wire
-/// shapes we support — OpenAI `/v1/chat/completions` and Anthropic
-/// `/v1/messages`. Pointing either of them at a third-party server is just a
-/// matter of editing the base URL, so we collapsed the picker from four
+/// The wire format the endpoint speaks. There are two provider families:
+/// OpenAI-compatible endpoints (`/v1/chat/completions` or `/v1/responses`) and
+/// Anthropic-compatible endpoints (`/v1/messages`). Pointing either family at a
+/// third-party server is just a matter of editing the base URL, so we collapsed
+/// the picker from four
 /// cases ("native" + "compatible" for each) down to two.
 ///
 /// Historical note: the old `.openAI` / `.anthropic` cases are kept in the
@@ -29,20 +30,20 @@ public enum AIProviderType: String, CaseIterable, Codable, Identifiable, Sendabl
 
     public var displayName: String {
         switch self {
-        case .openAI, .openAICompatible: return "OpenAI Compatible"
-        case .anthropic, .anthropicCompatible: return "Anthropic Compatible"
+        case .openAI, .openAICompatible: return "Chat API (OpenAI format)"
+        case .anthropic, .anthropicCompatible: return "Chat API (Anthropic format)"
         }
     }
 
     public var shortName: String {
         switch self {
-        case .openAI, .openAICompatible: return "OAI-compat"
-        case .anthropic, .anthropicCompatible: return "Ant-compat"
+        case .openAI, .openAICompatible: return "Chat API"
+        case .anthropic, .anthropicCompatible: return "Chat API"
         }
     }
 
-    /// Per-shape chat path. With "user types the URL" the base is always
-    /// user-supplied, so we don't return a default base URL for any case.
+    /// Per-family default chat path. OpenAI Responses is selected by typing a
+    /// Base URL that ends in `/responses`.
     public var defaultChatPath: String {
         switch self {
         case .openAI, .openAICompatible: return "/chat/completions"

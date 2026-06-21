@@ -28,3 +28,15 @@ export.p12
 
 # App Store Connect upload staging area (not source)
 for.app.store.connect.screenshots/
+
+# App Store Connect API helper (uses local .p8 key — keep private)
+scripts/ascapi/
+
+# Stray duplicate Xcode projects from prior runs
+WristAssistant 2.xcodeproj/
+WristAssistant 3.xcodeproj/
+WristAssistant 4.xcodeproj/
+WristAssistant 5.xcodeproj/
+
+# Backup plists
+*.plist.bak

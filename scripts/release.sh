@@ -64,10 +64,10 @@ xcodebuild \
 log "xcodebuild -exportArchive -> ${IPA_PATH}"
 xcodebuild \
   -exportArchive \
+  -allowProvisioningUpdates \
   -archivePath "${ARCHIVE_PATH}" \
   -exportPath "${EXPORT_DIR}" \
   -exportOptionsPlist "${EXPORT_OPTIONS}" \
-  -allowProvisioningUpdates \
   2>&1 | tail -20
 
 if [[ ! -f "${IPA_PATH}" ]]; then

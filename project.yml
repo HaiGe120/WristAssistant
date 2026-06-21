@@ -47,6 +47,12 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.wristassistant.app
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         TARGETED_DEVICE_FAMILY: "1"
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          "CODE_SIGN_IDENTITY[sdk=iphoneos*]": "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChatUI iOS AppStore 1.0"
     resources:
       - path: App/Resources
         optional: true
@@ -97,8 +103,14 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         SDKROOT: watchos
         SUPPORTED_PLATFORMS: "watchos watchsimulator"
-        SKIP_INSTALL: NO
+        SKIP_INSTALL: YES
         CODE_SIGN_STYLE: Automatic
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          "CODE_SIGN_IDENTITY[sdk=watchos*]": "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChatUI watchOS AppStore 1.0"
     resources:
       - path: Watch/Resources
         optional: true
@@ -141,8 +153,14 @@ targets:
         SDKROOT: watchos
         SUPPORTED_PLATFORMS: "watchos watchsimulator"
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
-        SKIP_INSTALL: NO
+        SKIP_INSTALL: YES
         CODE_SIGN_STYLE: Automatic
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          "CODE_SIGN_IDENTITY[sdk=watchos*]": "09E6DC14B92303A16DD32E13A43CA8272D5E3381"
+          PROVISIONING_PROFILE_SPECIFIER: "WristChatUI watchOS Widgets AppStore 1.0"
 
 schemes:
   WristAssistant:

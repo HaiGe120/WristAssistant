@@ -31,7 +31,7 @@ public struct OpenAIProvider: AIProvider {
                             continuation.finish()
                             return
                         }
-                        if let delta = Self.extractDelta(event.data) {
+                        if let delta = Self.extractDelta(event.data, endpoint: endpoint) {
                             #if DEBUG
                             if !delta.isEmpty { print("[WristAssistant] delta(\(delta.count)): \(delta.prefix(80))") }
                             #endif
@@ -107,39 +107,44 @@ public struct OpenAIProvider: AIProvider {
             request.setValue(v, forHTTPHeaderField: k)
         }
 
-        let payload = OpenAIRequest(
-            model: endpoint.model,
-            messages: Self.normalizedMessages(endpoint: endpoint, messages: messages),
-            stream: stream,
-            temperature: endpoint.temperature,
-            maxTokens: endpoint.maxTokens
-        )
-        request.httpBody = try JSONEncoder().encode(payload)
+        if endpoint.chatCompletionsURL()?.path.hasSuffix("/responses") == true {
+            let payload = OpenAIResponsesRequest(
+                model: endpoint.model,
+                instructions: Self.responsesInstructions(endpoint: endpoint, messages: messages),
+                input: Self.normalizedResponsesInput(endpoint: endpoint, messages: messages),
+                stream: stream,
+                temperature: endpoint.temperature,
+                maxOutputTokens: endpoint.maxTokens
+            )
+            request.httpBody = try JSONEncoder().encode(payload)
+        } else {
+            let payload = OpenAIChatRequest(
+                model: endpoint.model,
+                messages: Self.normalizedMessages(endpoint: endpoint, messages: messages),
+                stream: stream,
+                temperature: endpoint.temperature,
+                maxTokens: endpoint.maxTokens
+            )
+            request.httpBody = try JSONEncoder().encode(payload)
+        }
         return request
     }
 
     static func buildModelsRequest(endpoint: EndpointConfig, apiKey: String?) throws -> URLRequest {
-        guard let base = endpoint.baseURL else {
-            throw APIError.invalidURL(endpoint.baseURLString)
-        }
-        // Resolve the "models" path relative to the configured base so
-        // endpoints that include their own /v1 prefix (MiniMax, Groq, …)
-        // don't end up at /v1/v1/models. See the matching change in
-        // AnthropicProvider for the same fix on the Anthropic-compatible
-        // path.
-        guard let url = URL(string: "models", relativeTo: base)?.absoluteURL else {
+        guard let url = endpoint.modelsURL() else {
             throw APIError.invalidURL(endpoint.baseURLString)
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
         if let key = apiKey, !key.isEmpty {
             request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         }
         return request
     }
 
-    static fileprivate func normalizedMessages(endpoint: EndpointConfig, messages: [ChatMessage]) -> [OpenAIRequest.Message] {
-        var out: [OpenAIRequest.Message] = []
+    static fileprivate func normalizedMessages(endpoint: EndpointConfig, messages: [ChatMessage]) -> [OpenAIChatRequest.Message] {
+        var out: [OpenAIChatRequest.Message] = []
         let system = endpoint.systemPrompt.trimmingCharacters(in: .whitespacesAndNewlines)
         if !system.isEmpty {
             out.append(.init(role: "system", content: system))
@@ -150,11 +155,58 @@ public struct OpenAIProvider: AIProvider {
         return out
     }
 
+    static fileprivate func responsesInstructions(endpoint: EndpointConfig, messages: [ChatMessage]) -> String? {
+        var parts: [String] = []
+        let system = endpoint.systemPrompt.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !system.isEmpty {
+            parts.append(system)
+        }
+        for message in messages where message.role == .system {
+            let content = message.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !content.isEmpty {
+                parts.append(content)
+            }
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: "\n\n")
+    }
+
+    static fileprivate func normalizedResponsesInput(endpoint: EndpointConfig, messages: [ChatMessage]) -> [OpenAIResponsesRequest.InputItem] {
+        var out: [OpenAIResponsesRequest.InputItem] = []
+        for message in messages where message.role != .system {
+            out.append(.init(role: message.role.rawValue, content: message.content))
+        }
+        return out
+    }
+
     // MARK: - Response parsing
 
-    static func extractDelta(_ json: String) -> String? {
+    static func extractDelta(_ json: String, endpoint: EndpointConfig) -> String? {
         guard let data = json.data(using: .utf8) else { return nil }
         guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        if endpoint.chatCompletionsURL()?.path.hasSuffix("/responses") == true {
+            if let type = obj["type"] as? String, type == "response.output_text.delta",
+               let delta = obj["delta"] as? String {
+                return delta
+            }
+            if let type = obj["type"] as? String, type == "response.output_text.done",
+               let text = obj["text"] as? String {
+                return text
+            }
+            if let output = obj["output"] as? [[String: Any]] {
+                for item in output {
+                    if let content = item["content"] as? [[String: Any]] {
+                        for part in content {
+                            if let text = part["text"] as? String, !text.isEmpty {
+                                return text
+                            }
+                            if let delta = part["delta"] as? String, !delta.isEmpty {
+                                return delta
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if let choices = obj["choices"] as? [[String: Any]],
            let first = choices.first,
            let delta = first["delta"] as? [String: Any],
@@ -172,7 +224,7 @@ public struct OpenAIProvider: AIProvider {
     }
 }
 
-private struct OpenAIRequest: Encodable {
+private struct OpenAIChatRequest: Encodable {
     let model: String
     let messages: [Message]
     let stream: Bool
@@ -185,6 +237,25 @@ private struct OpenAIRequest: Encodable {
     }
 
     struct Message: Encodable {
+        let role: String
+        let content: String
+    }
+}
+
+private struct OpenAIResponsesRequest: Encodable {
+    let model: String
+    let instructions: String?
+    let input: [InputItem]
+    let stream: Bool
+    let temperature: Double
+    let maxOutputTokens: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case model, instructions, input, stream, temperature
+        case maxOutputTokens = "max_output_tokens"
+    }
+
+    struct InputItem: Encodable {
         let role: String
         let content: String
     }

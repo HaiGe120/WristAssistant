@@ -435,15 +435,12 @@
 				TargetAttributes = {
 					77448730D4BFB88B26F60C24 = {
 						DevelopmentTeam = W6DM8CHQA7;
-						ProvisioningStyle = Automatic;
 					};
 					992696984A16B188B19F41FC = {
 						DevelopmentTeam = W6DM8CHQA7;
-						ProvisioningStyle = Automatic;
 					};
 					F5CC28FBF3B68356D517EED7 = {
 						DevelopmentTeam = W6DM8CHQA7;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -591,13 +588,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/WristAssistant.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app;
+				PROVISIONING_PROFILE_SPECIFIER = "WristChatUI iOS AppStore 1.0";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -616,7 +616,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp.widgets;
 				SDKROOT = watchos;
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -646,11 +646,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = Watch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp;
+				PROVISIONING_PROFILE_SPECIFIER = "WristChatUI watchOS AppStore 1.0";
 				SDKROOT = watchos;
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -803,7 +806,9 @@
 		BA7124A4C605BEC77072BB01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = 09E6DC14B92303A16DD32E13A43CA8272D5E3381;
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = WatchWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -811,8 +816,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp.widgets;
+				PROVISIONING_PROFILE_SPECIFIER = "WristChatUI watchOS Widgets AppStore 1.0";
 				SDKROOT = watchos;
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -828,7 +834,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wristassistant.app.watchkitapp;
 				SDKROOT = watchos;
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 4;

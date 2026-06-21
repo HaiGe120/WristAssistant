@@ -121,8 +121,8 @@ struct SettingsView: View {
                 Section("About") {
                     LabeledContent("Version", value: appVersion)
                     Link("Open WebUI", destination: URL(string: "https://openwebui.com")!)
-                    Link("OpenAI API docs", destination: URL(string: "https://platform.openai.com/docs/api-reference/chat")!)
-                    Link("Anthropic API docs", destination: URL(string: "https://docs.anthropic.com/en/api/messages")!)
+                    Link("Chat API reference (OpenAI format)", destination: URL(string: "https://platform.openai.com/docs/api-reference/chat")!)
+                    Link("Chat API reference (Anthropic format)", destination: URL(string: "https://docs.anthropic.com/en/api/messages")!)
                 }
             }
             .navigationTitle("Settings")
